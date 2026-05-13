@@ -104,17 +104,14 @@
 
     <div class="chart-card">
       <div class="chart-title">On-time renewal rate</div>
-      <div class="chart-sub">Monthly · Jan 2025 – Apr 2026</div>
-      <div class="legend">
-        <span><span class="ll" style="background:#1a4a7a"></span>2025</span>
-        <span><span class="ll" style="background:#7bbf6e"></span>2026</span>
+      <div class="chart-sub">Monthly · Jan – Dec</div>
       </div>
       <div class="cw"><canvas id="c1"></canvas></div>
     </div>
 
     <div class="chart-card">
       <div class="chart-title">12-month rolling retention</div>
-      <div class="chart-sub">Monthly · Feb 2025 – Apr 2026</div>
+      <div class="chart-sub">Monthly · Jan – Dec</div>
       <div class="legend">
         <span><span class="ll" style="background:#2d5f3f"></span>2025</span>
         <span><span class="ll" style="background:#7bbf6e"></span>2026</span>
@@ -202,39 +199,39 @@ const xBar  = { ticks:{ ...TK, autoSkip:true, maxTicksLimit:9 }, grid:{ color:GR
 const yP = (mn,mx) => ({ min:mn, max:mx, ticks:{ ...TK, callback: v=>(v*100).toFixed(0)+'%' }, grid:{ color:GRD } });
 const yN = (mx)    => ({ min:0,  max:mx, ticks:{ ...TK, callback: v=>v>=1000?(v/1000).toFixed(0)+'k':v }, grid:{ color:GRD } });
 
-// Chart 1 — On-time renewal (all data through Apr 2026)
+// Chart 1 — On-time renewal: calendar month view, two lines
 new Chart(document.getElementById('c1'), {
   type:'line',
   data:{
-    labels:['Jan 2025','Feb 2025','Mar 2025','Apr 2025','May 2025','Jun 2025','Jul 2025','Aug 2025','Sep 2025','Oct 2025','Nov 2025','Dec 2025','Jan 2026','Feb 2026','Mar 2026','Apr 2026'],
+    labels:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
     datasets:[
-      { label:'2025', data:[0.79,0.77,0.77,0.92,0.66,0.67,0.66,0.65,0.64,0.56,0.66,0.67,null,null,null,null],
-        borderColor:'#1a4a7a', backgroundColor:'rgba(26,74,122,0.06)', fill:true, borderWidth:2, pointRadius:3, pointHoverRadius:5, tension:0.35 },
-      { label:'2026', data:[null,null,null,null,null,null,null,null,null,null,null,null,0.75,0.75,0.72,0.77],
-        borderColor:'#7bbf6e', backgroundColor:'rgba(123,191,110,0.08)', fill:true, borderWidth:2, pointRadius:3, pointHoverRadius:5, tension:0.35 }
+      { label:'2025', data:[0.79,0.77,0.77,0.92,0.66,0.67,0.66,0.65,0.64,0.56,0.66,0.67],
+        borderColor:'#1a4a7a', backgroundColor:'rgba(26,74,122,0.06)', fill:true, borderWidth:2.5, pointRadius:4, pointHoverRadius:6, tension:0.35 },
+      { label:'2026', data:[0.75,0.75,0.72,0.77,null,null,null,null,null,null,null,null],
+        borderColor:'#7bbf6e', backgroundColor:'rgba(123,191,110,0.08)', fill:true, borderWidth:2.5, pointRadius:4, pointHoverRadius:6, tension:0.35 }
     ]
   },
   options:{ responsive:true, maintainAspectRatio:false,
-    plugins:{ legend:{display:false}, tooltip:{ ...TT, callbacks:{ label: c=>'  '+(c.parsed.y*100).toFixed(0)+'%' } } },
-    scales:{ x:xRot, y:yP(0.4,1.0) }
+    plugins:{ legend:{display:false}, tooltip:{ ...TT, mode:'index', intersect:false, callbacks:{ label: c=>c.parsed.y!=null?'  '+c.dataset.label+': '+(c.parsed.y*100).toFixed(0)+'%':'  '+c.dataset.label+': —' } } },
+    scales:{ x:xFlat, y:yP(0.4,1.0) }
   }
 });
 
-// Chart 2 — Rolling retention (all data through Apr 2026)
+// Chart 2 — Rolling retention: calendar month view, two lines
 new Chart(document.getElementById('c2'), {
   type:'line',
   data:{
-    labels:['Feb 2025','Mar 2025','Apr 2025','May 2025','Jun 2025','Jul 2025','Aug 2025','Sep 2025','Oct 2025','Nov 2025','Dec 2025','Jan 2026','Feb 2026','Mar 2026','Apr 2026'],
+    labels:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
     datasets:[
-      { label:'2025', data:[0.7934,0.7576,0.7798,0.8004,0.7684,0.7351,0.7217,0.7172,0.7584,0.6273,0.7092,null,null,null,null],
-        borderColor:'#2d5f3f', backgroundColor:'rgba(45,95,63,0.08)', fill:true, borderWidth:2, pointRadius:3, pointHoverRadius:5, tension:0.35 },
-      { label:'2026', data:[null,null,null,null,null,null,null,null,null,null,null,0.7086,0.7073,0.7082,0.6125],
-        borderColor:'#7bbf6e', backgroundColor:'rgba(123,191,110,0.08)', fill:true, borderWidth:2, pointRadius:3, pointHoverRadius:5, tension:0.35 }
+      { label:'2025', data:[null,0.7934,0.7576,0.7798,0.8004,0.7684,0.7351,0.7217,0.7172,0.7584,0.6273,0.7092],
+        borderColor:'#2d5f3f', backgroundColor:'rgba(45,95,63,0.08)', fill:true, borderWidth:2.5, pointRadius:4, pointHoverRadius:6, tension:0.35 },
+      { label:'2026', data:[0.7086,0.7073,0.7082,0.6125,null,null,null,null,null,null,null,null],
+        borderColor:'#7bbf6e', backgroundColor:'rgba(123,191,110,0.08)', fill:true, borderWidth:2.5, pointRadius:4, pointHoverRadius:6, tension:0.35 }
     ]
   },
   options:{ responsive:true, maintainAspectRatio:false,
-    plugins:{ legend:{display:false}, tooltip:{ ...TT, callbacks:{ label: c=>'  '+(c.parsed.y*100).toFixed(1)+'%' } } },
-    scales:{ x:xRot, y:yP(0.5,0.85) }
+    plugins:{ legend:{display:false}, tooltip:{ ...TT, mode:'index', intersect:false, callbacks:{ label: c=>c.parsed.y!=null?'  '+c.dataset.label+': '+(c.parsed.y*100).toFixed(1)+'%':'  '+c.dataset.label+': —' } } },
+    scales:{ x:xFlat, y:yP(0.4,0.9) }
   }
 });
 
